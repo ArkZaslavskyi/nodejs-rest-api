@@ -40,8 +40,14 @@ const logout = async (user) => {
   return await User.findByIdAndUpdate(_id, { $set: { token: null } });
 };
 
+const currentUser = async (id) => {
+  const user = await User.findById(id);
+  return user;
+};
+
 module.exports = {
   signUp,
   login,
   logout,
+  currentUser,
 };
