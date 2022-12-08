@@ -1,5 +1,5 @@
 const services = require("../services");
-// const { requestError } = require("../helpers/apiHelpers");
+const { requestError } = require("../helpers/apiHelpers");
 
 const signUp = async (req, res) => {
   const { email, password } = req.body;
@@ -31,9 +31,25 @@ const current = async (req, res) => {
   res.status(200).json({ email, subscription });
 };
 
+const patchUserSubscription = async (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+
+  const user = await services.updateUserSubscriptionById(id, body);
+
+  if (!user) {
+    throw requestError(404, `Not found contact with id: ${id}`);
+  }
+
+  const { email, subscription } = user;
+
+  return res.status(200).json({ email, subscription });
+};
+
 module.exports = {
   signUp,
   login,
   logout,
   current,
+  patchUserSubscription,
 };
