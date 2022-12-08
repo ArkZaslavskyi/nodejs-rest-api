@@ -24,8 +24,16 @@ const logout = async (req, res) => {
   res.status(204).json(user);
 };
 
+const current = async (req, res) => {
+  const { _id } = req.user;
+  const { email, subscription } = await services.currentUser(_id);
+
+  res.status(200).json({ email, subscription });
+};
+
 module.exports = {
   signUp,
   login,
   logout,
+  current,
 };
