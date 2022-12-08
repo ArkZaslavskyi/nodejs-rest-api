@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const bcrypt = require("bcrypt");
 const handleSchemeValidationError = require("./handleSchemeValidationError");
 
 const userScheme = new Schema(
@@ -24,6 +25,12 @@ const userScheme = new Schema(
   },
   { versionKey: false, timestamps: true }
 );
+
+userScheme.pre("save", async function () {
+  if (this.$isNew) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+});
 
 userScheme.post("save", handleSchemeValidationError);
 
