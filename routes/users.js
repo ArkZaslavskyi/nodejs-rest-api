@@ -25,6 +25,7 @@ router.patch(
   "/:id",
   isValidId,
   validationBody(schemaUserSubscription),
+  authMiddleware,
   asyncWrapper(ctrlUsers.patchUserSubscription)
 );
 
