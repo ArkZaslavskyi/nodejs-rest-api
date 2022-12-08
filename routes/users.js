@@ -23,4 +23,6 @@ router.post(
 
 router.get("/logout", authMiddleware, asyncWrapper(ctrlUsers.logout));
 
+router.get("/current", authMiddleware, asyncWrapper(ctrlUsers.current));
+
 module.exports = router;
