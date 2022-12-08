@@ -3,7 +3,11 @@ const { Router } = require("express");
 const ctrlContacts = require("../../controllers/contacts");
 
 const { asyncWrapper } = require("../../helpers/apiHelpers");
-const { validationBody, isValidId } = require("../../middlewares");
+const {
+  validationBody,
+  isValidId,
+  authMiddleware,
+} = require("../../middlewares");
 
 const {
   schemaPostContact,
@@ -12,6 +16,9 @@ const {
 } = require("../../schemes");
 
 const router = new Router();
+
+// check token
+router.use(authMiddleware);
 
 router.get("/", asyncWrapper(ctrlContacts.getContacts));
 router.get("/:id", isValidId, asyncWrapper(ctrlContacts.getContactById));
