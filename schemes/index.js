@@ -4,11 +4,12 @@ const {
   schemaPatchContactStatus,
 } = require("./schemesContact");
 
-const { schemaUser } = require("./schemaUser");
+const { schemaUser, schemaUserSubscription } = require("./schemaUser");
 
 module.exports = {
   schemaPostContact,
   schemaPutContact,
   schemaPatchContactStatus,
   schemaUser,
+  schemaUserSubscription,
 };

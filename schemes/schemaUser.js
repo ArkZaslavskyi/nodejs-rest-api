@@ -9,6 +9,11 @@ const schemaUser = Joi.object({
   token: Joi.string(),
 });
 
+const schemaUserSubscription = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});
+
 module.exports = {
   schemaUser,
+  schemaUserSubscription,
 };
