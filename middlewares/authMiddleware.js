@@ -9,9 +9,9 @@ const authMiddleware = (req, res, next) => {
     next(requestError(401, "Not authorized"));
   }
 
-  const [, token] = authorization.split(" ");
+  const [tokenType, token] = authorization.split(" ");
 
-  if (!token) {
+  if (!(tokenType === "Bearer" && token)) {
     next(requestError(401, "Not authorized"));
   }
 
