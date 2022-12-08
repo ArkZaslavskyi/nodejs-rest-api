@@ -7,7 +7,13 @@ const {
   updateStatusContactById,
 } = require("./contactsServices");
 
-const { signUp, login, logout, currentUser } = require("./userServices");
+const {
+  signUp,
+  login,
+  logout,
+  currentUser,
+  updateUserSubscriptionById,
+} = require("./userServices");
 
 module.exports = {
   //
@@ -15,6 +21,7 @@ module.exports = {
   login,
   logout,
   currentUser,
+  updateUserSubscriptionById,
   //
   getContacts,
   getContactById,

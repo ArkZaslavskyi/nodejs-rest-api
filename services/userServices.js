@@ -45,9 +45,20 @@ const currentUser = async (id) => {
   return user;
 };
 
+const updateUserSubscriptionById = async (id, body) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    { $set: body },
+    { returnDocument: "after" }
+  );
+
+  return user;
+};
+
 module.exports = {
   signUp,
   login,
   logout,
   currentUser,
+  updateUserSubscriptionById,
 };
