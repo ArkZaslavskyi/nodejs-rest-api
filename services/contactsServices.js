@@ -1,10 +1,13 @@
 const { Contact } = require("../models");
 
-const getContacts = async (userId) => {
-  const contacts = await Contact.find({ owner: userId }).select({
-    updatedAt: 0,
-    owner: 0,
-  });
+const getContacts = async (userId, { page, limit }) => {
+  const contacts = await Contact.find({ owner: userId })
+    .select({
+      updatedAt: 0,
+      owner: 0,
+    })
+    .skip((page - 1) * limit)
+    .limit(limit);
   return contacts;
 };
 
