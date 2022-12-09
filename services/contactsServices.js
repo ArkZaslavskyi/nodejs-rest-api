@@ -1,24 +1,30 @@
 const { Contact } = require("../models");
 
-const getContacts = async () => {
-  const contacts = await Contact.find();
+const getContacts = async (userId) => {
+  const contacts = await Contact.find({ owner: userId }).select({
+    updatedAt: 0,
+    owner: 0,
+  });
   return contacts;
 };
 
-const getContactById = async (id) => {
-  const contact = await Contact.findById(id);
+const getContactById = async (contactId, userId) => {
+  const contact = await Contact.findOne({
+    _id: contactId,
+    owner: userId,
+  }).select({ updatedAt: 0, owner: 0 });
   return contact;
 };
 
-const addContact = async (body) => {
-  const contact = new Contact(body);
+const addContact = async (body, userId) => {
+  const contact = new Contact({ ...body, owner: userId });
   const postedContact = await contact.save();
   return postedContact;
 };
 
-const updateContactById = async (id, body) => {
-  const contact = await Contact.findByIdAndUpdate(
-    id,
+const updateContactById = async (contactId, body, userId) => {
+  const contact = await Contact.findOneAndUpdate(
+    { _id: contactId, owner: userId },
     { $set: body },
     { returnDocument: "after" }
   );
@@ -26,14 +32,17 @@ const updateContactById = async (id, body) => {
   return contact;
 };
 
-const removeContactById = async (id) => {
-  const deletedContact = await Contact.findByIdAndDelete(id);
+const removeContactById = async (contactId, userId) => {
+  const deletedContact = await Contact.findOneAndDelete({
+    _id: contactId,
+    owner: userId,
+  });
 
   return deletedContact;
 };
 
-const updateStatusContactById = async (id, body) => {
-  return updateContactById(id, body);
+const updateStatusContactById = async (contactId, body, userId) => {
+  return updateContactById(contactId, body, userId);
 };
 
 module.exports = {
