@@ -19,8 +19,8 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const user = jwt.decode(token, secret);
-    req.user = user;
-    req.token = token;
+    req.user = user; // pass 'user' to next middlewares
+    req.token = token; // pass 'token' to next middlewares
     next();
   } catch (error) {
     next(requestError(401, "Not authorized"));
