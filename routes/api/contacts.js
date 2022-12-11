@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const ctrlContacts = require("../../controllers/contacts");
+const ctrl = require("../../controllers");
 
 const { asyncWrapper } = require("../../helpers/apiHelpers");
 const {
@@ -20,25 +20,25 @@ const router = new Router();
 // check token
 router.use(authMiddleware);
 
-router.get("/", asyncWrapper(ctrlContacts.getContacts));
-router.get("/:id", isValidId, asyncWrapper(ctrlContacts.getContactById));
+router.get("/", asyncWrapper(ctrl.getContacts));
+router.get("/:id", isValidId, asyncWrapper(ctrl.getContactById));
 router.post(
   "/",
   validationBody(schemaPostContact),
-  asyncWrapper(ctrlContacts.postContact)
+  asyncWrapper(ctrl.postContact)
 );
 router.put(
   "/:id",
   isValidId,
   validationBody(schemaPutContact),
-  asyncWrapper(ctrlContacts.putContact)
+  asyncWrapper(ctrl.putContact)
 );
-router.delete("/:id", isValidId, asyncWrapper(ctrlContacts.deleteContact));
+router.delete("/:id", isValidId, asyncWrapper(ctrl.deleteContact));
 router.patch(
   "/:id/favorite",
   isValidId,
   validationBody(schemaPatchContactStatus),
-  asyncWrapper(ctrlContacts.patchContactStatus)
+  asyncWrapper(ctrl.patchContactStatus)
 );
 
 module.exports = router;
