@@ -14,17 +14,14 @@ const signUp = async (email, password) => {
 const login = async (email, password) => {
   const user = await User.findOne({ email });
 
-  if (!user) {
-    throw requestError(401, "Email or password is wrong"); // `Email ${email} is wrong`
-  }
-
-  if (!(await bcrypt.compare(password, user.password))) {
-    throw requestError(401, "Email or password is wrong"); // 'Password is wrong'
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throw requestError(401, "Email or password is wrong");
   }
 
   const { JWT_SECRET: secret } = process.env;
+  const payload = { _id: user._id };
 
-  const token = jwt.sign({ _id: user._id, createdAt: user.createdAt }, secret); //, { expiresIn: "15m" }
+  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
 
   await User.findByIdAndUpdate(
     user._id,
@@ -38,11 +35,6 @@ const login = async (email, password) => {
 const logout = async (user) => {
   const { _id } = user;
   return await User.findByIdAndUpdate(_id, { $set: { token: null } });
-};
-
-const currentUser = async (id) => {
-  const user = await User.findById(id);
-  return user;
 };
 
 const updateUserSubscriptionById = async (id, body) => {
@@ -59,6 +51,5 @@ module.exports = {
   signUp,
   login,
   logout,
-  currentUser,
   updateUserSubscriptionById,
 };
