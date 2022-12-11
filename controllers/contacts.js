@@ -3,9 +3,13 @@ const { requestError } = require("../helpers/apiHelpers");
 
 const getContacts = async (req, res) => {
   const { _id: userId } = req.user;
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, favorite } = req.query;
 
-  const contacts = await services.getContacts(userId, { page, limit });
+  const contacts = await services.getContacts(userId, {
+    page,
+    limit,
+    favorite,
+  });
 
   res.status(200).json(contacts);
 };
