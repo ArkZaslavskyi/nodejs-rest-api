@@ -20,13 +20,12 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  const user = await services.logout(req.user);
-  res.status(204).json(user);
+  await services.logout(req.user);
+  res.status(204).json();
 };
 
 const current = async (req, res) => {
-  const { _id } = req.user;
-  const { email, subscription } = await services.currentUser(_id);
+  const { email, subscription } = req.user;
 
   res.status(200).json({ email, subscription });
 };
