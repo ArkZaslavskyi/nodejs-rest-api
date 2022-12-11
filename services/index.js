@@ -11,7 +11,6 @@ const {
   signUp,
   login,
   logout,
-  currentUser,
   updateUserSubscriptionById,
 } = require("./userServices");
 
@@ -20,7 +19,6 @@ module.exports = {
   signUp,
   login,
   logout,
-  currentUser,
   updateUserSubscriptionById,
   //
   getContacts,

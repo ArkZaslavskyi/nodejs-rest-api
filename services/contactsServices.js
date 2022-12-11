@@ -1,13 +1,20 @@
+const { string } = require("joi");
 const { Contact } = require("../models");
 
-const getContacts = async (userId, { page, limit }) => {
-  const contacts = await Contact.find({ owner: userId })
+const getContacts = async (userId, { page, limit, favorite }) => {
+  const findRules = { owner: userId };
+  if (favorite && ["true", "false"].includes(favorite)) {
+    findRules.favorite = favorite === "true";
+  }
+
+  const contacts = await Contact.find(findRules)
     .select({
+      createdAt: 0,
       updatedAt: 0,
       owner: 0,
     })
     .skip((page - 1) * limit)
-    .limit(limit);
+    .limit(parseInt(limit)); // .populate("owner", "email subscription");
   return contacts;
 };
 
@@ -15,7 +22,7 @@ const getContactById = async (contactId, userId) => {
   const contact = await Contact.findOne({
     _id: contactId,
     owner: userId,
-  }).select({ updatedAt: 0, owner: 0 });
+  }).select({ createdAt: 0, updatedAt: 0, owner: 0 });
   return contact;
 };
 
