@@ -1,4 +1,3 @@
-const { string } = require("joi");
 const { Contact } = require("../models");
 
 const getContacts = async (userId, { page, limit, favorite }) => {
