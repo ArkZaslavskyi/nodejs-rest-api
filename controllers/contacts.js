@@ -1,75 +1,93 @@
-const services = require('../services');
-const { requestError } = require('../helpers/apiHelpers');
+const services = require("../services");
+const { requestError } = require("../helpers/apiHelpers");
 
-const getContacts = async (_, res) => {
-	const contacts = await services.getContacts();
-	
-	res.status(200).json(contacts);
+const getContacts = async (req, res) => {
+  const { _id: userId } = req.user;
+  const { page = 1, limit = 10, favorite } = req.query;
+
+  const contacts = await services.getContacts(userId, {
+    page,
+    limit,
+    favorite,
+  });
+
+  res.status(200).json(contacts);
 };
 
 const getContactById = async (req, res) => {
-	const { id } = req.params;
+  const { id: contactId } = req.params;
+  const { _id: userId } = req.user;
 
-	const contact = await services.getContactById(id);
-	
-	if (!contact) {
-		throw requestError(404, `Not found contact with id: ${id}`);
-	};
+  const contact = await services.getContactById(contactId, userId);
 
-	return res.status(200).json(contact);
+  if (!contact) {
+    throw requestError(404, `Not found contact with id: ${contactId}`);
+  }
+
+  return res.status(200).json(contact);
 };
 
 const postContact = async (req, res) => {
-	const { body } = req;
+  const { body } = req;
+  const { _id: userId } = req.user;
 
-	const postedContact = await services.addContact(body);
+  const postedContact = await services.addContact(body, userId);
 
-	res.status(201).json(postedContact);
+  res.status(201).json(postedContact);
 };
 
 const putContact = async (req, res) => {
-	const { id } = req.params;
-	const { body } = req;
+  const { body } = req;
+  const { id: contactId } = req.params;
+  const { _id: userId } = req.user;
 
-	const contact = await services.updateContactById(id, body);
+  const contact = await services.updateContactById(contactId, body, userId);
 
-	if (!contact) {
-		throw requestError(404, `Not found contact with id: ${id}`);
-	};
+  if (!contact) {
+    throw requestError(404, `Not found contact with id: ${contactId}`);
+  }
 
-	return res.status(200).json(contact);
+  return res.status(200).json(contact);
 };
 
 const deleteContact = async (req, res) => {
-	const { id } = req.params;
+  const { id: contactId } = req.params;
+  const { _id: userId } = req.user;
 
-	const deletedContact = await services.removeContactById(id);
+  const deletedContact = await services.removeContactById(contactId, userId);
 
-	if (!deletedContact) {
-		throw requestError(404, `Not found contact with id: ${id}`);
-	};
-	
-	return res.status(200).json({ "message": `contact with id: ${id} was deleted` });
+  if (!deletedContact) {
+    throw requestError(404, `Not found contact with id: ${contactId}`);
+  }
+
+  return res
+    .status(200)
+    .json({ message: `contact with id: ${contactId} was deleted` });
 };
 
 const patchContactStatus = async (req, res) => {
-	const { id } = req.params;
-	const { body } = req;
+  const { body } = req;
+  const { id: contactId } = req.params;
+  const { _id: userId } = req.user;
 
-	const contact = await services.updateStatusContactById(id, body);
+  const contact = await services.updateStatusContactById(
+    contactId,
+    body,
+    userId
+  );
 
-	if (!contact) {
-		throw requestError(404, `Not found contact with id: ${id}`);
-	};
+  if (!contact) {
+    throw requestError(404, `Not found contact with id: ${contactId}`);
+  }
 
-	return res.status(200).json(contact);
+  return res.status(200).json(contact);
 };
 
 module.exports = {
-	getContacts,
-	getContactById,
-	postContact,
-	deleteContact,
-	putContact,
-	patchContactStatus,
+  getContacts,
+  getContactById,
+  postContact,
+  deleteContact,
+  putContact,
+  patchContactStatus,
 };

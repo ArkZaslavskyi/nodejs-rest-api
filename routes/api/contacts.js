@@ -1,34 +1,44 @@
-const { Router } = require('express');
+const { Router } = require("express");
 
-const ctrlContacts = require('../../controllers/contacts');
+const ctrl = require("../../controllers");
 
-const { asyncWrapper } = require('../../helpers/apiHelpers');
-const { validationBody, isValidId } = require('../../middlewares');
+const { asyncWrapper } = require("../../helpers/apiHelpers");
+const {
+  validationBody,
+  isValidId,
+  authMiddleware,
+} = require("../../middlewares");
 
 const {
-    schemaPostContact,
-    schemaPutContact,
-    schemaPatchContactStatus
-} = require('../../schemes/schemes');
-
+  schemaPostContact,
+  schemaPutContact,
+  schemaPatchContactStatus,
+} = require("../../schemes");
 
 const router = new Router();
 
-router.get('/',
-    asyncWrapper(ctrlContacts.getContacts));
-router.get('/:id', isValidId,
-    asyncWrapper(ctrlContacts.getContactById));
-router.post('/',
-    validationBody(schemaPostContact),
-    asyncWrapper(ctrlContacts.postContact));
-router.put('/:id', isValidId,
-    validationBody(schemaPutContact),
-    asyncWrapper(ctrlContacts.putContact));
-router.delete('/:id', isValidId,
-    asyncWrapper(ctrlContacts.deleteContact));
-router.patch('/:id/favorite', isValidId,
-    validationBody(schemaPatchContactStatus),
-    asyncWrapper(ctrlContacts.patchContactStatus)
+// check token
+router.use(authMiddleware);
+
+router.get("/", asyncWrapper(ctrl.getContacts));
+router.get("/:id", isValidId, asyncWrapper(ctrl.getContactById));
+router.post(
+  "/",
+  validationBody(schemaPostContact),
+  asyncWrapper(ctrl.postContact)
+);
+router.put(
+  "/:id",
+  isValidId,
+  validationBody(schemaPutContact),
+  asyncWrapper(ctrl.putContact)
+);
+router.delete("/:id", isValidId, asyncWrapper(ctrl.deleteContact));
+router.patch(
+  "/:id/favorite",
+  isValidId,
+  validationBody(schemaPatchContactStatus),
+  asyncWrapper(ctrl.patchContactStatus)
 );
 
 module.exports = router;
