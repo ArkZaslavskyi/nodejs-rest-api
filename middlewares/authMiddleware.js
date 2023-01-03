@@ -18,13 +18,13 @@ const authMiddleware = async (req, res, next) => {
 
   const [tokenType, token] = authorization.split(" ");
 
-  if (!(tokenType === "Bearer" && token)) {
-    next(requestError(401, "Not authorized"));
-  }
-
   const { JWT_SECRET: secret } = process.env;
 
   try {
+    if (!(tokenType === "Bearer" && token)) {
+      next(requestError(401, "Not authorized"));
+    }
+
     const decodedUser = jwt.verify(token, secret);
     const user = await User.findById(decodedUser._id);
 
