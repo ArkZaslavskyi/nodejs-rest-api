@@ -7,6 +7,7 @@ const { BASE_API_URL, BASE_USER_URL } = process.env;
 
 const contactsRouter = require("./routes/api/contacts");
 const usersRouter = require("./routes/users");
+const filesRouter = require("./routes/api/files");
 
 const { errorHandler } = require("./helpers/apiHelpers");
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use(BASE_USER_URL, usersRouter);
 app.use(BASE_API_URL, contactsRouter);
+app.use(filesRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: "Not found" });
