@@ -45,10 +45,28 @@ const patchUserSubscription = async (req, res) => {
   return res.status(200).json({ email, subscription });
 };
 
+const path = require("path");
+const fs = require("fs/promises");
+const avatarsDir = path.resolve(__dirname, "../public", "avatars");
+
+const patchUserAvatar = async (req, res) => {
+  const { path: tmpPath, filename } = req.file;
+  console.log("req.file:", req.file);
+  const publicAvatarPath = path.resolve(avatarsDir, filename);
+  // const user = await services.patchUserAvatarById()
+  try {
+    await fs.rename(tmpPath, publicAvatarPath);
+    res.status(201).json({ message: "succcess" });
+  } catch (error) {
+    await fs.unlink(tmpPath);
+  }
+};
+
 module.exports = {
   signUp,
   login,
   logout,
   current,
   patchUserSubscription,
+  patchUserAvatar,
 };

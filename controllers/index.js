@@ -2,8 +2,9 @@ const {
   signUp,
   login,
   logout,
-  patchUserSubscription,
   current,
+  patchUserSubscription,
+  patchUserAvatar,
 } = require("./users");
 
 const {
@@ -19,8 +20,9 @@ module.exports = {
   signUp,
   login,
   logout,
-  patchUserSubscription,
   current,
+  patchUserSubscription,
+  patchUserAvatar,
   //
   getContacts,
   getContactById,
