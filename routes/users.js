@@ -18,24 +18,6 @@ router.post("/login", validationBody(schemaUser), asyncWrapper(ctrl.login));
 router.get("/logout", authMiddleware, asyncWrapper(ctrl.logout));
 router.get("/current", authMiddleware, asyncWrapper(ctrl.current));
 
-// const multer = require("multer");
-// const path = require("path");
-// const { v4: uuidv4 } = require("uuid");
-
-// const tmpDir = path.resolve(__dirname, "../tmp");
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     console.log(tmpDir);
-//     cb(null, tmpDir);
-//   },
-//   filename: (req, file, cb) => {
-//     const [, ext] = file.originalname.split(".");
-//     cb(null, `${uuidv4()}.${ext}`);
-//   },
-// });
-// const uploadMiddleware = multer({ storage });
-
 router.patch(
   "/avatars",
   authMiddleware,
