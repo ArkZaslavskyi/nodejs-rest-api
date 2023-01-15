@@ -1,5 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs/promises");
+const Jimp = require("jimp");
 require("dotenv").config();
 
 const { User } = require("../models");
@@ -47,9 +50,38 @@ const updateUserSubscriptionById = async (id, body) => {
   return user;
 };
 
+const patchUserAvatarById = async (userId, file) => {
+  const { path: tmpPath, filename } = file;
+
+  const avatarsDir = path.resolve(__dirname, "../public", "avatars");
+  const publicAvatarPath = path.resolve(avatarsDir, filename);
+  try {
+    // resizing avatar
+    const avatar = await Jimp.read(tmpPath);
+    await avatar.resize(250, 250);
+    await avatar.writeAsync(tmpPath);
+
+    // moving avatar to public folder
+    await fs.rename(tmpPath, publicAvatarPath);
+
+    // updating avatar's link to db
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: { avatarURL: publicAvatarPath } },
+      { returnDocument: "after" }
+    );
+
+    return user;
+  } catch (error) {
+    await fs.unlink(tmpPath);
+    throw requestError(400, "Saving avatars error");
+  }
+};
+
 module.exports = {
   signUp,
   login,
   logout,
   updateUserSubscriptionById,
+  patchUserAvatarById,
 };

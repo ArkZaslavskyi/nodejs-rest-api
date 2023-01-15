@@ -12,6 +12,7 @@ const {
   login,
   logout,
   updateUserSubscriptionById,
+  patchUserAvatarById,
 } = require("./userServices");
 
 module.exports = {
@@ -20,6 +21,7 @@ module.exports = {
   login,
   logout,
   updateUserSubscriptionById,
+  patchUserAvatarById,
   //
   getContacts,
   getContactById,

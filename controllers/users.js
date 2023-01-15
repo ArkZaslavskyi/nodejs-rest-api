@@ -45,10 +45,23 @@ const patchUserSubscription = async (req, res) => {
   return res.status(200).json({ email, subscription });
 };
 
+const patchUserAvatar = async (req, res) => {
+  const { _id: userId } = req.user;
+  const { file } = req;
+
+  try {
+    const user = await services.patchUserAvatarById(userId, file);
+    const { avatarURL } = user;
+
+    res.status(200).json({ avatarURL });
+  } catch (error) {}
+};
+
 module.exports = {
   signUp,
   login,
   logout,
   current,
   patchUserSubscription,
+  patchUserAvatar,
 };

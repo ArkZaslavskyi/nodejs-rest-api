@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 const handleSchemeValidationError = require("./handleSchemeValidationError");
+const gravatar = require("gravatar");
 
 const userScheme = new Schema(
   {
@@ -22,6 +23,9 @@ const userScheme = new Schema(
       type: String,
       default: null,
     },
+    avatarURL: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -29,6 +33,9 @@ const userScheme = new Schema(
 userScheme.pre("save", async function () {
   if (this.$isNew) {
     this.password = await bcrypt.hash(this.password, 10);
+
+    const url = gravatar.url(this.email, true);
+    this.avatarURL = url;
   }
 });
 
