@@ -8,6 +8,13 @@ const signUp = async (req, res) => {
   res.status(201).json({ user: { email, subscription } });
 };
 
+const verification = async (req, res) => {
+  const { verificationToken } = req.params;
+  await services.verification(verificationToken);
+
+  res.status(200).json("Verification successful");
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -59,6 +66,7 @@ const patchUserAvatar = async (req, res) => {
 
 module.exports = {
   signUp,
+  verification,
   login,
   logout,
   current,
