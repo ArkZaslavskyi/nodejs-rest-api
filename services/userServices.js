@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 require("dotenv").config();
+const { v4: uuidv4 } = require("uuid");
 
 const { User } = require("../models");
 const { requestError } = require("../helpers/apiHelpers");
@@ -12,7 +13,11 @@ const { requestError } = require("../helpers/apiHelpers");
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signUp = async (email, password) => {
-  const user = new User({ email, password });
+  const verificationToken = uuidv4();
+  console.log("vt: ", verificationToken);
+
+  const user = new User({ email, password, verificationToken });
+  console.log(user);
   const signedUser = await user.save();
 
   return signedUser;

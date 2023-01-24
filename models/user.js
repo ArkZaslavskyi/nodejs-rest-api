@@ -2,7 +2,6 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 const handleSchemeValidationError = require("./handleSchemeValidationError");
 const gravatar = require("gravatar");
-const { v4: uuid4 } = require("uuid");
 
 const userScheme = new Schema(
   {
@@ -45,8 +44,6 @@ userScheme.pre("save", async function () {
 
     const url = gravatar.url(this.email, true);
     this.avatarURL = url;
-
-    this.verificationToken = uuid4();
   }
 });
 
