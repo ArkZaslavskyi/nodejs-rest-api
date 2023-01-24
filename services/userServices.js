@@ -8,11 +8,39 @@ require("dotenv").config();
 const { User } = require("../models");
 const { requestError } = require("../helpers/apiHelpers");
 
+// const sgMail = require("@sendgrid/mail");
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const signUp = async (email, password) => {
   const user = new User({ email, password });
   const signedUser = await user.save();
+
   return signedUser;
 };
+
+const verification = async (verificationToken) => {
+  const user = await User.findOne({ verificationToken });
+
+  if (!user) {
+    throw requestError(404, "User not found");
+  }
+
+  user.verificationToken = null;
+  user.verify = true;
+  user.save();
+
+  return true;
+};
+
+// const msg = {
+//   to: email, // Change to your recipient
+//   from: "ark.thebest@gmail.com", // Change to your verified sender
+//   subject: "thank you for registration",
+//   text: "and easy to do anywhere, even with Node.js",
+//   html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+// };
+
+// await sgMail.send(msg);
 
 const login = async (email, password) => {
   const user = await User.findOne({ email });
@@ -80,6 +108,7 @@ const patchUserAvatarById = async (userId, file) => {
 
 module.exports = {
   signUp,
+  verification,
   login,
   logout,
   updateUserSubscriptionById,
