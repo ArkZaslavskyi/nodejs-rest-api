@@ -12,6 +12,8 @@ const { requestError } = require("../helpers/apiHelpers");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const { VERIFIED_SENDER: sender } = process.env;
+
 // =======< signUp >======= //
 const signUp = async (email, password) => {
   const verificationToken = uuidv4();
@@ -21,15 +23,13 @@ const signUp = async (email, password) => {
 
   // create & send e-mail vith verification string
   const msg = {
-    to: "ark.thebest@gmail.com", // Change to your recipient
-    from: "ark.thebest@gmail.com", // Change to your verified sender
+    to: email, // Change to your recipient
+    from: sender, // Change to your verified sender
     subject: "Thank you for registration!",
     text: `Please, confirm youe e-mail address GET http://localhost:3000/users/verify/${verificationToken}`,
-    html: `Please, confirm youe e-mail address GET http://localhost:3000/users/verify/${verificationToken}`,
+    html: `Please, <a href="http://localhost:3000/users/verify/${verificationToken}">confirm</a> youe e-mail address`,
   };
   await sgMail.send(msg);
-
-  console.log(`GET http://localhost:3000/users/verify/${verificationToken}`);
 
   return signedUser;
 };
@@ -44,9 +44,9 @@ const verification = async (verificationToken) => {
 
   // create & send e-mail vith confirm verification
   const msg = {
-    to: "ark.thebest@gmail.com", // Change to your recipient
-    from: "ark.thebest@gmail.com", // Change to your verified sender
-    subject: "Thank you for registration!",
+    to: user.email, // Change to your recipient
+    from: sender, // Change to your verified sender
+    subject: "Thank you for confirming your registration!",
     text: "Your registration is done",
     html: "Your registration is done",
   };
