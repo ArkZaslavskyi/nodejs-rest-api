@@ -9,49 +9,68 @@ const { v4: uuidv4 } = require("uuid");
 const { User } = require("../models");
 const { requestError } = require("../helpers/apiHelpers");
 
-// const sgMail = require("@sendgrid/mail");
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// =======< signUp >======= //
 const signUp = async (email, password) => {
   const verificationToken = uuidv4();
-  console.log("vt: ", verificationToken);
 
   const user = new User({ email, password, verificationToken });
-  console.log(user);
   const signedUser = await user.save();
+
+  // create & send e-mail vith verification string
+  const msg = {
+    to: "ark.thebest@gmail.com", // Change to your recipient
+    from: "ark.thebest@gmail.com", // Change to your verified sender
+    subject: "Thank you for registration!",
+    text: `Please, confirm youe e-mail address GET http://localhost:3000/users/verify/${verificationToken}`,
+    html: `Please, confirm youe e-mail address GET http://localhost:3000/users/verify/${verificationToken}`,
+  };
+  await sgMail.send(msg);
+
+  console.log(`GET http://localhost:3000/users/verify/${verificationToken}`);
 
   return signedUser;
 };
 
+// =======< verification >======= //
 const verification = async (verificationToken) => {
-  const user = await User.findOne({ verificationToken });
+  const user = await User.findOne({ verificationToken, verify: false });
 
   if (!user) {
     throw requestError(404, "User not found");
   }
 
+  // create & send e-mail vith confirm verification
+  const msg = {
+    to: "ark.thebest@gmail.com", // Change to your recipient
+    from: "ark.thebest@gmail.com", // Change to your verified sender
+    subject: "Thank you for registration!",
+    text: "Your registration is done",
+    html: "Your registration is done",
+  };
+  await sgMail.send(msg);
+
   user.verificationToken = null;
   user.verify = true;
-  user.save();
+
+  await user.save();
 
   return true;
 };
 
-// const msg = {
-//   to: email, // Change to your recipient
-//   from: "ark.thebest@gmail.com", // Change to your verified sender
-//   subject: "thank you for registration",
-//   text: "and easy to do anywhere, even with Node.js",
-//   html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-// };
-
-// await sgMail.send(msg);
-
+// =======< login >======= //
 const login = async (email, password) => {
   const user = await User.findOne({ email });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw requestError(401, "Email or password is wrong");
+  }
+
+  // checking if the user is verified
+  if (!user.verify) {
+    throw requestError(401, "Verified is wrong");
   }
 
   const { JWT_SECRET: secret } = process.env;
@@ -68,6 +87,7 @@ const login = async (email, password) => {
   return { user, token };
 };
 
+// =======< logout >=======
 const logout = async (user) => {
   const { _id } = user;
   return await User.findByIdAndUpdate(_id, { $set: { token: null } });
@@ -83,6 +103,7 @@ const updateUserSubscriptionById = async (id, body) => {
   return user;
 };
 
+// =======< patchUserAvatarById >=======
 const patchUserAvatarById = async (userId, file) => {
   const { path: tmpPath, filename } = file;
 

@@ -10,8 +10,8 @@ const signUp = async (req, res) => {
 
 const verification = async (req, res) => {
   const { verificationToken } = req.params;
-  await services.verification(verificationToken);
 
+  await services.verification(verificationToken);
   res.status(200).json("Verification successful");
 };
 
