@@ -1,6 +1,7 @@
 const services = require("../services");
 const { requestError } = require("../helpers/apiHelpers");
 
+// =======< signUp >======= //
 const signUp = async (req, res) => {
   const { email, password } = req.body;
   const { subscription } = await services.signUp(email, password);
@@ -8,6 +9,7 @@ const signUp = async (req, res) => {
   res.status(201).json({ user: { email, subscription } });
 };
 
+// =======< verification >======= //
 const verification = async (req, res) => {
   const { verificationToken } = req.params;
 
@@ -15,6 +17,19 @@ const verification = async (req, res) => {
   res.status(200).json("Verification successful");
 };
 
+// =======< resendingEmail >======= //
+const resendingEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw requestError(400, "missing required field email");
+  }
+
+  await services.resendingEmail(email);
+  res.status(200).json("Verification email sent");
+};
+
+// =======< login >======= //
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -26,17 +41,20 @@ const login = async (req, res) => {
   res.status(200).json({ token, user: { email, subscription: subscription } });
 };
 
+// =======< logout >======= //
 const logout = async (req, res) => {
   await services.logout(req.user);
   res.status(204).json();
 };
 
+// =======< current >======= //
 const current = async (req, res) => {
   const { email, subscription } = req.user;
 
   res.status(200).json({ email, subscription });
 };
 
+// =======< patchUserSubscription >======= //
 const patchUserSubscription = async (req, res) => {
   const { id } = req.params;
   const { body } = req;
@@ -48,10 +66,10 @@ const patchUserSubscription = async (req, res) => {
   }
 
   const { email, subscription } = user;
-
   return res.status(200).json({ email, subscription });
 };
 
+// =======< patchUserAvatar >======= //
 const patchUserAvatar = async (req, res) => {
   const { _id: userId } = req.user;
   const { file } = req;
@@ -67,6 +85,7 @@ const patchUserAvatar = async (req, res) => {
 module.exports = {
   signUp,
   verification,
+  resendingEmail,
   login,
   logout,
   current,
