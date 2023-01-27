@@ -60,6 +60,32 @@ const verification = async (verificationToken) => {
   return true;
 };
 
+// =======< resendingEmail >======= //
+const resendingEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw requestError(404, "User not found");
+  }
+
+  const { verify, verificationToken } = user;
+
+  // checking if the user is verified
+  if (verify) {
+    throw requestError(400, "Verification has already been passed");
+  }
+
+  const msg = {
+    to: email, // Change to your recipient
+    from: sender, // Change to your verified sender
+    subject: "Thank you for registration!",
+    text: `Please, confirm youe e-mail address GET http://localhost:3000/users/verify/${verificationToken}`,
+    html: `Please, <a href="http://localhost:3000/users/verify/${verificationToken}">confirm</a> youe e-mail address`,
+  };
+  await sgMail.send(msg);
+
+  return true;
+};
+
 // =======< login >======= //
 const login = async (email, password) => {
   const user = await User.findOne({ email });
@@ -135,6 +161,7 @@ const patchUserAvatarById = async (userId, file) => {
 module.exports = {
   signUp,
   verification,
+  resendingEmail,
   login,
   logout,
   updateUserSubscriptionById,
