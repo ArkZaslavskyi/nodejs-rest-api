@@ -17,7 +17,8 @@ router.post("/signup", validationBody(schemaUser), asyncWrapper(ctrl.signUp));
 router.post("/login", validationBody(schemaUser), asyncWrapper(ctrl.login));
 router.get("/logout", authMiddleware, asyncWrapper(ctrl.logout));
 router.get("/current", authMiddleware, asyncWrapper(ctrl.current));
-
+router.get("/verify/:verificationToken", asyncWrapper(ctrl.verification));
+router.post("/verify", asyncWrapper(ctrl.resendingEmail));
 router.patch(
   "/avatars",
   authMiddleware,

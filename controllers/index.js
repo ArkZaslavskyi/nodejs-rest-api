@@ -1,5 +1,7 @@
 const {
   signUp,
+  verification,
+  resendingEmail,
   login,
   logout,
   current,
@@ -18,6 +20,8 @@ const {
 
 module.exports = {
   signUp,
+  verification,
+  resendingEmail,
   login,
   logout,
   current,

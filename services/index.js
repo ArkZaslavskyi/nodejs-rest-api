@@ -9,6 +9,8 @@ const {
 
 const {
   signUp,
+  verification,
+  resendingEmail,
   login,
   logout,
   updateUserSubscriptionById,
@@ -18,6 +20,8 @@ const {
 module.exports = {
   //
   signUp,
+  verification,
+  resendingEmail,
   login,
   logout,
   updateUserSubscriptionById,
