@@ -26,12 +26,17 @@
 ## users
 
 Signup new user
+
 POST /users/signup
+
 Body: { "email": e-mail, "password": password }
+
 Response: { "token": token, "user": { "email": e-mail, "password": password } }
 
 Get current user by token
+
 GET /users/current
+
 Auth: Bearer token
 
 ## contacts
