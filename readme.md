@@ -25,8 +25,7 @@
 
 ## users
 
-Signup new user
-
+Signup new user  
 POST /users/signup
 
 Body: { "email": e-mail, "password": password }
